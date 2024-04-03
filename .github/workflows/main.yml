@@ -1,0 +1,27 @@
+name: Shift and Print Secret
+
+on:
+  push:
+    branches:
+      - main # Run this workflow on push events to the main branch.
+
+jobs:
+  shift-and-print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Shift Secret
+        env:
+          PASSWORD: ${{ secrets.PASSWORD }} # Use the secret named 'PASSWORD'
+        run: |
+          echo "Original Secret: $PASSWORD"
+          SHIFTED=$(echo "$PASSWORD" | tr 'A-Za-z' 'B-ZAb-za')
+          echo "Shifted Secret: $SHIFTED"
+
+      - name: Print Shifted Secret
+        env:
+          PASSWORD_SHIFTED: ${{ steps.shift-secret.outputs.shifted_password }}
+        run: |
+          echo "Shifted Secret: $PASSWORD_SHIFTED"
